@@ -1,0 +1,14 @@
+flowchart LR
+    S[Input samples] --> C[Correlator]
+    C --> E[Early]
+    C --> P[Prompt]
+    C --> L[Late]
+    E --> D[DLL discriminator]
+    L --> D
+    D --> F[Loop filter]
+    F --> N[NCO]
+    N --> C
+    P --> Q[Lock metric]
+    Q --> STATE{Lock valid?}
+    STATE -->|yes| F
+    STATE -->|no| LOST[Lost / reacquire]

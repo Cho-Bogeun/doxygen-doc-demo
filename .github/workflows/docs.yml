@@ -1,0 +1,75 @@
+name: Doxygen docs
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: doxygen-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOXYGEN_VERSION: "1.18.0"
+  DOXYGEN_SHA256: "14fa81bdc34171edb5f1f02b1d60e74802f0439b77fa44e592565d517d72df90"
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install runtime dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends ca-certificates curl graphviz
+
+      - name: Install Doxygen
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz"
+          curl --fail --location --silent --show-error             "https://www.doxygen.nl/files/${archive}"             --output "${archive}"
+          echo "${DOXYGEN_SHA256}  ${archive}" | sha256sum --check -
+          tar -xzf "${archive}"
+          sudo install             "doxygen-${DOXYGEN_VERSION}/bin/doxygen"             /usr/local/bin/doxygen
+          doxygen --version
+
+      - name: Build documentation
+        run: doxygen Doxyfile
+
+      - name: Upload HTML artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: doxygen-html
+          path: build/docs/html
+          if-no-files-found: error
+
+      - name: Upload Pages artifact
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/docs/html
+
+  deploy:
+    if: github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

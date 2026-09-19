@@ -1,0 +1,69 @@
+/**
+ * @page tracking_loop Tracking Loop Design
+ *
+ * @tableofcontents
+ *
+ * @section tracking_goal Goal
+ *
+ * The tracking loop keeps the locally generated code replica aligned with the
+ * incoming signal after acquisition has produced an initial code phase and
+ * Doppler estimate.
+ *
+ * The C++ entry point is demo::TrackingLoop::update(). The API declaration
+ * intentionally contains only the caller-facing contract; this page contains
+ * the longer algorithm explanation.
+ *
+ * @section tracking_flow Processing flow
+ *
+ * The diagram source lives separately in `docs/diagrams/tracking.mmd`.
+ *
+ * @mermaidfile tracking.mmd "Tracking signal flow"
+ *
+ * @section tracking_states State model
+ *
+ * | State | Entry condition | Main behavior |
+ * |:------|:----------------|:--------------|
+ * | Acquiring | Object construction | Wait for an initial acquisition result |
+ * | Tracking | initialize() succeeds | Update discriminator, filter, and NCO every epoch |
+ * | Lost | Lock metric falls below policy | Stop trusting loop output and request reacquisition |
+ *
+ * @section tracking_equations Core equations
+ *
+ * The normalized Early-minus-Late discriminator is:
+ *
+ * @f[
+ *   e_k = NormalizedEarlyLate{|E_k|}{|L_k|}
+ * @f]
+ *
+ * The simplified loop-filter update used by this example is:
+ *
+ * @f[
+ *   LoopFilterUpdate
+ * @f]
+ *
+ * The notation is:
+ *
+ * | Symbol | Meaning | Unit |
+ * |:-------|:--------|:-----|
+ * | @f$E_k@f$ | Early correlator magnitude | arbitrary |
+ * | @f$L_k@f$ | Late correlator magnitude | arbitrary |
+ * | @f$e_k@f$ | DLL discriminator output | dimensionless |
+ * | @f$f_k@f$ | NCO frequency correction | Hz |
+ * | @f$K_p, K_i@f$ | Loop-filter gains | implementation-defined |
+ *
+ * @section tracking_contract Important invariants
+ *
+ * - initialize() must run before the first update().
+ * - Exactly one task owns a TrackingLoop instance.
+ * - update() is called once per 1 ms epoch.
+ * - The real-time update path performs no dynamic allocation.
+ * - Loss-of-lock policy belongs above the low-level discriminator math.
+ *
+ * @section tracking_why Why the long explanation is outside the header
+ *
+ * The header should answer questions a caller needs while using the API:
+ * preconditions, ownership, units, side effects, lifetime, and concurrency.
+ *
+ * This page answers questions a maintainer needs while changing the algorithm:
+ * processing flow, state transitions, equations, and design invariants.
+ */
