@@ -18,10 +18,11 @@ HIDE_UNDOC_CLASSES     = NO
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 GENERATE_LATEX         = NO
-GENERATE_TREEVIEW      = YES
-FULL_SIDEBAR           = YES
+GENERATE_TREEVIEW      = NO
+FULL_SIDEBAR           = NO
 DISABLE_INDEX          = NO
 SEARCHENGINE           = YES
+HTML_EXTRA_STYLESHEET  = docs/mobile.css
 
 HAVE_DOT               = YES
 DOT_IMAGE_FORMAT       = svg
