@@ -1,0 +1,54 @@
+/*
+ * Keep Doxygen content readable on narrow screens.
+ *
+ * The tree sidebar is disabled in Doxyfile so Doxygen can use its native
+ * responsive top navigation. These rules only tune content density.
+ */
+
+@media screen and (max-width: 767px) {
+  body,
+  table,
+  div,
+  p,
+  dl {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .header {
+    margin: 0;
+  }
+
+  .headertitle,
+  .contents {
+    margin-left: 14px;
+    margin-right: 14px;
+  }
+
+  .title {
+    font-size: 1.45rem;
+    line-height: 1.25;
+  }
+
+  .contents table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .contents .mermaid,
+  .contents .formulaDsp {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .contents .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .fragment {
+    overflow-x: auto;
+  }
+}
