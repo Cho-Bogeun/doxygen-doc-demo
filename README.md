@@ -1,5 +1,7 @@
 # Doxygen documentation demo
 
+**Live documentation:** https://cho-bogeun.github.io/doxygen-doc-demo/
+
 A small C++ example that uses Doxygen as both an API reference generator and a lightweight design-document system.
 
 ## What this demonstrates
