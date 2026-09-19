@@ -1,11 +1,22 @@
 /*
- * Keep Doxygen content readable on narrow screens.
- *
- * The tree sidebar is disabled in Doxyfile so Doxygen can use its native
- * responsive top navigation. These rules only tune content density.
+ * Keep the desktop tree navigation, but switch to Doxygen's native
+ * responsive top menu on narrow screens.
  */
 
 @media screen and (max-width: 767px) {
+  /* navtree.js writes the sidebar width and content margin inline.
+   * !important is intentional here so the mobile layout can override it.
+   */
+  #side-nav,
+  #splitbar {
+    display: none !important;
+  }
+
+  #doc-content {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+
   body,
   table,
   div,
