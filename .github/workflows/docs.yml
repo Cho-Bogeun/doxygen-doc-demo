@@ -56,14 +56,18 @@ jobs:
           path: build/docs/html
           if-no-files-found: error
 
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
+
       - name: Upload Pages artifact
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: build/docs/html
 
   deploy:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
 
