@@ -35,7 +35,7 @@ enum class TrackingState : std::uint8_t {
  * This class is not thread-safe. All calls for one instance must come from
  * the same tracking task.
  *
- * @see tracking_loop
+ * @see @ref tracking_loop
  */
 class TrackingLoop {
 public:
@@ -46,7 +46,7 @@ public:
      * @param initial_doppler_hz Initial carrier Doppler estimate in hertz.
      *
      * @post state() returns TrackingState::Tracking.
-     * @see tracking_loop
+     * @see @ref tracking_loop
      */
     void initialize(float initial_code_phase, float initial_doppler_hz);
 
